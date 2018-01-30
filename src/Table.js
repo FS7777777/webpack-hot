@@ -5,32 +5,19 @@ var table = (function($){
 	 * _*开头的方法表示内部方法
 	 */
 	var table = {};
+	var _table = $('table');
 	table.init =function(){
-		
-		/*
-		 * 给表格添加id
-		 * 
-		 * 
-		 */
 		var rowsAndColumns = _rowsAndColumns();
+		_initId();
 		//console.log(rowsAndColumns);
-		var row = 0;
-		$("table tbody tr").each(function(){
-			var column = 0;
-			$(this).find('td').each(function(){
-				$(this).attr('id','tb_'+row+'_'+column);
-				column++;
-			});
-			row++;
-		});
 		/*
 		 * 判断鼠标是否是按下移动状态，决定是否标记选中的单元格
 		 */
 		var mouseDownFlag = false;
-		$("table tr td").bind('mousedown',function(){
+		_table.find("tr td").bind('mousedown',function(){
 			mouseDownFlag = true;
 		});
-		$("table tr td").bind('mouseup',function(){
+		_table.find("tr td").bind('mouseup',function(){
 			mouseDownFlag = false;
 			if(!$(this).hasClass('choose'))
 			{
@@ -39,7 +26,7 @@ var table = (function($){
 				})
 			}
 		});
-		$("table tr td").bind('mousemove',function(){
+		_table.find("tr td").bind('mousemove',function(){
 			if(mouseDownFlag){
 				$(this).addClass('choose');
 			}
@@ -53,9 +40,24 @@ var table = (function($){
 	 */
 	var _rowsAndColumns = function(){
 		return{
-			rows : $("table tbody tr").length,
-			column : $("table thead tr th").length
+			rows : _table.find("tbody tr").length,
+			column : _table.find("thead tr th").length
 		}
+	}
+	/*
+	 * 给表格添加id
+	 */
+	var _initId = function(){
+		var row = 0;
+		_table.find("tbody tr").each(function(){
+			var column = 0;
+			$(this).find('td').each(function(){
+				$(this).attr('id','tb_'+row+'_'+column);
+				$(this).prop('id','tb_'+row+'_'+column);
+				column++;
+			});
+			row++;
+		});
 	}
 	
 	//列合并
