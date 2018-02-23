@@ -5,8 +5,8 @@
 		<title></title>
 		<link href="src/apply.css" rel="stylesheet" type="text/css">
 	</head>
-	<body>
-		<table border="1">
+	<body oncontextmenu="return false;" ondragstart="return false;" >
+		<table border="1" id="myTable">
 			<thead>
 			    <tr>
 			        <th>Header 1</th>
@@ -105,6 +105,7 @@
 	<script src="plugin/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="src/Table.js" ></script>
 	<script>
+ 
 		$(function(){
 			table.T.init();
 			$("#Nodes").click(function(){

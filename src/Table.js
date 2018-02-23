@@ -5,7 +5,8 @@ var table = (function($){
 	 * _*开头的方法表示内部方法
 	 */
 	var T = {};
-	var _table = $('table');
+	var tb = document.getElementById("myTable");
+	var _table = $(tb);
 	var _beginCell = null;
 	var _endCell = null;
 		/*
@@ -45,7 +46,7 @@ var table = (function($){
 	T.init =function(){
 		var rowsAndColumns = _rowsAndColumns();
 		_initId();
-		//console.log(rowsAndColumns);
+		console.log(rowsAndColumns);
 		/*
 		 * 判断鼠标是否是按下移动状态，决定是否标记选中的单元格
 		 */
@@ -77,16 +78,34 @@ var table = (function($){
 	 * 需要兼容已经合并过的cell位置
 	 */
 	T.nodes = function(){
-		
+		//tb.rows[4].deleteCell(3);
 		console.log(_beginCell);
 		console.log(_endCell);
-		//获取两点间的所有租表 
-		 
-		 return;
+		var startIndex = _beginCell.attr('id').split('_');
+		var endIndex = _endCell.attr('id').split('_');
+		var start1 = parseInt(startIndex[1]);
+		var end1 = parseInt(startIndex[2]);
+		var start2 = parseInt(endIndex[1]);
+		var end2 = parseInt(endIndex[2]);
+	
+		//获取两点间的所有租表
+		for(var i=start1;i<=start2;i++){
+			for(var j=end1;j<=end2;j++){
+				_addClass($('#tb_'+i+'_'+j));
+			}
+		}
 	}
 	
-	//列合并
-	//行合并
+	T.addCell = function(){
+		tb.rows[4].insertCell(3);
+	}
+	
+	T.deleteCell = function(){
+		tb.rows[4].deleteCell(3);
+	}
+	/*
+	 * 行合并
+	 */
 	
 	return {T:T};
 })(jQuery);
