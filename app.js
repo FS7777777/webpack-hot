@@ -2,7 +2,7 @@ import Point from './es6/Point.js';
 import el from './es6/element.js';
 import diff from './es6/diff.js';
 import patch from './es6/patch.js';
-import zrender from 'zrender'
+import OneWay from './binding/oneway'
 // var zr = zrender.init(document.getElementById('myCanvas'));
 // var circle = new zrender.Circle({
 //     shape: {
@@ -19,6 +19,31 @@ import zrender from 'zrender'
 
 // var body = document.querySelector('#app');
 // body.textContent = 'Good point: ' + new Point(1, 88);
+
+let template = document.querySelector('#app').innerHTML
+
+let oneway = new OneWay({
+  template: template,
+  el: '#app',
+  data: {
+    name: 'oneway',
+    lang: 'javascript',
+    work: 'data binding',
+    supports: ['String', 'Array', 'Object'],
+    info: {
+      author: 'Jrain',
+      jsVersion: 'Ecma2015'
+    },
+    motto: 'hello world'
+  }
+})
+
+document.querySelector('#oneway-test').oninput = (e) => {
+    oneway.$setData(oneway.$data, ($d) => {
+      $d.motto = e.target.value
+    })
+  }
+
 
 //vnode
 var tree = el('div', {'id': 'container'}, [
