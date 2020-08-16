@@ -1,69 +1,60 @@
-import Point from './es6/Point.js';
-import el from './es6/element.js';
-import diff from './es6/diff.js';
-import patch from './es6/patch.js';
-import OneWay from './binding/oneway'
-// var zr = zrender.init(document.getElementById('myCanvas'));
-// var circle = new zrender.Circle({
-//     shape: {
-//         cx: 150,
-//         cy: 50,
-//         r: 40
-//     },
-//     style: {
-//         fill: 'none',
-//         stroke: '#F00'
-//     }
-// });
-// zr.add(circle);
-
-// var body = document.querySelector('#app');
-// body.textContent = 'Good point: ' + new Point(1, 88);
-
-let template = document.querySelector('#app').innerHTML
-
-let oneway = new OneWay({
-  template: template,
-  el: '#app',
-  data: {
-    name: 'oneway',
-    lang: 'javascript',
-    work: 'data binding',
-    supports: ['String', 'Array', 'Object'],
-    info: {
-      author: 'Jrain',
-      jsVersion: 'Ecma2015'
-    },
-    motto: 'hello world'
-  }
-})
-
-document.querySelector('#oneway-test').oninput = (e) => {
-    oneway.$setData(oneway.$data, ($d) => {
-      $d.motto = e.target.value
-    })
-  }
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// const OrbitControls = require('three/examples/jsm/controls/OrbitControls.js')
 
 
-//vnode
-var tree = el('div', {'id': 'container'}, [
-    el('h1', {style: 'color: blue'}, ['simple virtal dom']),
-    el('p', ['Hello, virtual-dom']),
-    el('ul', [el('li')])
-])
-  
-var ulRoot = tree.render()
-console.log(ulRoot)
-document.body.appendChild(ulRoot)
+/**
+    * 创建场景对象Scene
+    */
+var scene = new THREE.Scene();
+/**
+ * 创建网格模型
+ */
+// var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
+var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
+var material = new THREE.MeshLambertMaterial({
+  color: 0x0000ff
+}); //材质对象Material
+var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+scene.add(mesh); //网格模型添加到场景中
 
-var newTree = el('div', {'id': 'container'}, [
-    el('h1', {style: 'color: red'}, ['simple virtal dom']),
-    el('p', ['Hello, virtual-dom']),
-    el('ul', [el('li'), el('li')])
-])
+/**
+     * 光源设置
+     */
+//点光源
+var point = new THREE.PointLight(0xffffff);
+point.position.set(400, 200, 300); //点光源位置
+scene.add(point); //点光源添加到场景中
+//环境光
+var ambient = new THREE.AmbientLight(0x444444);
+scene.add(ambient);
 
-// 4. 比较两棵虚拟DOM树的不同
-var patches = diff(tree, newTree)
+/**
+     * 相机设置
+     */
+var width = window.innerWidth; //窗口宽度
+var height = window.innerHeight; //窗口高度
+var k = width / height; //窗口宽高比
+var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+//创建相机对象
+var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+camera.position.set(200, 300, 200); //设置相机位置
+camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+/**
+ * 创建渲染器对象
+ */
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(width, height);//设置渲染区域尺寸
+renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+//执行渲染操作   指定场景、相机作为参数
 
-// 5. 在真正的DOM元素上应用变更
-patch(ulRoot, patches)
+function render() {
+  renderer.render(scene, camera);//执行渲染操作
+  mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
+  requestAnimationFrame(render);//请求再次执行渲染函数render
+}
+render();
+
+var controls = new OrbitControls(camera, renderer.domElement);//创建控件对象
+// controls.addEventListener('change', renderer);//监听鼠标、键盘事件

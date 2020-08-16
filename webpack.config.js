@@ -12,15 +12,27 @@ module.exports = {
 		port: 8099
 	},
 	module: {
-		loaders: [{
-			test: /\.js?$/,
-			exclude: /(node_modules|bower_components)/,
-			loader: 'babel',
-			query: {
-				presets: ['es2015']
-			}
+		// loaders: [{
+		// 	test: /\.js?$/,
+		// 	exclude: /(node_modules|bower_components)/,
+		// 	loader: 'babel',
+		// 	query: {
+		// 		presets: ['es2015']
+		// 	}
 
-		}]
+		// }]
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env']
+					}
+				}
+			}
+		]
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
