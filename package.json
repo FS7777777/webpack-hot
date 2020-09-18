@@ -12,7 +12,15 @@
     "webpack": "3.10.0",
     "webpack-dev-server": "^1.16.2",
     "zrender": "^4.0.3",
-    "three": "^0.119.1"
+    "three": "^0.119.1",
+    "@babylonjs/core": "4.1.0",
+    "@babylonjs/materials": "4.1.0",
+    "@babylonjs/loaders": "4.1.0",
+    "@babylonjs/post-processes": "4.1.0",
+    "@babylonjs/procedural-textures": "4.1.0",
+    "@babylonjs/serializers": "4.1.0",
+    "@babylonjs/gui": "4.1.0",
+    "@babylonjs/viewer": "4.1.0"
   },
   "scripts": {
     "build": "webpack",

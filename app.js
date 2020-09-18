@@ -1,60 +1,38 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-// const OrbitControls = require('three/examples/jsm/controls/OrbitControls.js')
+import * as BABYLON from 'babylonjs';
+// import { Scene, Engine } from 'babylonjs';
 
+var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-/**
-    * 创建场景对象Scene
-    */
-var scene = new THREE.Scene();
-/**
- * 创建网格模型
- */
-// var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
-var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
-var material = new THREE.MeshLambertMaterial({
-  color: 0x0000ff
-}); //材质对象Material
-var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-scene.add(mesh); //网格模型添加到场景中
+/******* Add the create scene function ******/
+var createScene = function () {
 
-/**
-     * 光源设置
-     */
-//点光源
-var point = new THREE.PointLight(0xffffff);
-point.position.set(400, 200, 300); //点光源位置
-scene.add(point); //点光源添加到场景中
-//环境光
-var ambient = new THREE.AmbientLight(0x444444);
-scene.add(ambient);
+  // Create the scene space
+  var scene = new BABYLON.Scene(engine);
 
-/**
-     * 相机设置
-     */
-var width = window.innerWidth; //窗口宽度
-var height = window.innerHeight; //窗口高度
-var k = width / height; //窗口宽高比
-var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
-//创建相机对象
-var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
-camera.position.set(200, 300, 200); //设置相机位置
-camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
-/**
- * 创建渲染器对象
- */
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(width, height);//设置渲染区域尺寸
-renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
-document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
-//执行渲染操作   指定场景、相机作为参数
+  // Add a camera to the scene and attach it to the canvas
+  var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 0, 5), scene);
+  camera.attachControl(canvas, true);
 
-function render() {
-  renderer.render(scene, camera);//执行渲染操作
-  mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
-  requestAnimationFrame(render);//请求再次执行渲染函数render
-}
-render();
+  // Add lights to the scene
+  var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+  var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
-var controls = new OrbitControls(camera, renderer.domElement);//创建控件对象
-// controls.addEventListener('change', renderer);//监听鼠标、键盘事件
+  // Add and manipulate meshes in the scene
+  var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
+
+  return scene;
+};
+/******* End of the create scene function ******/
+
+var scene = createScene(); //Call the createScene function
+
+// Register a render loop to repeatedly render the scene
+engine.runRenderLoop(function () {
+  scene.render();
+});
+
+// Watch for browser/canvas resize events
+window.addEventListener("resize", function () {
+  engine.resize();
+});
